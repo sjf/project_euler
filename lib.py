@@ -43,15 +43,14 @@ def get_factors(n):
   prime_facs = Counter(prime_factors(n))
   return _get_factors(list(prime_facs.items()))
 
-def _get_factors(pairs, rest=[]):
+def _get_factors(pairs, partial=1):
   """ Return all factors from the prime factors."""
   if not pairs:
-    factor = multiply(list(map(lambda p: p[0]**p[1], rest)))
-    return [factor]
+    return [partial]
   result = []
   (num, exp) = pairs[0]
   for i in range(exp+1):
-    result.extend(_get_factors(pairs[1:], rest[:]+[(num, i)]))
+    result.extend(_get_factors(pairs[1:], partial * num**i))
   return result
 
 
