@@ -1,22 +1,18 @@
 #!/usr/bin/env python3
-N=3
+N=20
 
-def positive_bits(i):
-  res = 0
-  while i:
-    if i & 1:
-      res += 1
-    i = i >> 1
-  return res
+counts = [[0 for i in range(N+1)] for j in range(N+1)]
 
-max = 2**(N*2)
-i = 0
-count = 0
-while i < max:
-  if positive_bits(i) == N:
-    count += 1
-  i += 1
-  print (i,count)
+pts = [(N,N)]
 
-print(count)
+for i in range(N+1):
+  #initialize top and left edges, they have one only path
+  counts[0][i] = 1
+  counts[i][0] = 1
 
+#other points have the sum of the points up & left
+for i in range(1, N+1):
+  for j in range(1, N+1):
+    counts[i][j] = counts[i-1][j] + counts[i][j-1]
+      
+print(counts[N][N])
