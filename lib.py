@@ -53,4 +53,10 @@ def _get_factors(pairs, partial=1):
     result.extend(_get_factors(pairs[1:], partial * num**i))
   return result
 
-
+def first(p):
+  return p[0]
+def second(p):
+  return p[1]
+def push(l, item):
+  l.insert(0, item)
+  return l
