@@ -16,6 +16,22 @@ def prime_factors(n):
   result.append(int(n))
   return result
 
+def get_factors(n):
+  """ Returns the factors of n."""
+  assert isinstance(n, int)
+  prime_facs = Counter(prime_factors(n))
+  return _get_factors(list(prime_facs.items()))
+
+def _get_factors(pairs, partial=1):
+  """ Return all factors from pairs of the prime factors and their exponents."""
+  if not pairs:
+    return [partial]
+  result = []
+  (num, exp) = pairs[0]
+  for i in range(exp+1):
+    result.extend(_get_factors(pairs[1:], partial * num**i))
+  return result
+
 def primes(n):
   """ Returns the prime numbers up to n."""
   assert isinstance(n, int)
@@ -36,23 +52,6 @@ def primes(n):
 def multiply(l):
   assert isinstance(l, list)
   return reduce(lambda x, y: x*y, l)
-
-def get_factors(n):
-  """ Returns the factors of n."""
-  assert isinstance(n, int)
-  prime_facs = Counter(prime_factors(n))
-  return _get_factors(list(prime_facs.items()))
-
-def _get_factors(pairs, partial=1):
-  """ Return all factors from the prime factors."""
-  if not pairs:
-    return [partial]
-  result = []
-  (num, exp) = pairs[0]
-  for i in range(exp+1):
-    result.extend(_get_factors(pairs[1:], partial * num**i))
-  return result
-
 def first(p):
   return p[0]
 def second(p):
