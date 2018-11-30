@@ -3,8 +3,6 @@ N=20
 
 counts = [[0 for i in range(N+1)] for j in range(N+1)]
 
-pts = [(N,N)]
-
 for i in range(N+1):
   #initialize top and left edges, they have one only path
   counts[0][i] = 1
