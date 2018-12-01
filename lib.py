@@ -19,6 +19,7 @@ def prime_factors(n):
 def get_factors(n):
   """ Returns the factors of n."""
   assert isinstance(n, int)
+  if n == 1: return [1]
   prime_facs = Counter(prime_factors(n))
   return _get_factors(list(prime_facs.items()))
 
