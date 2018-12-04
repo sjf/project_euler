@@ -37,14 +37,16 @@ def _get_factors(pairs, partial=1):
     result.extend(_get_factors(pairs[1:], partial * num**i))
   return result
 
-def primes(n):
+def primes(n, sieve = None):
   """ Returns the prime numbers up to n."""
   assert isinstance(n, int)
+  assert len(sieve) == n
 
-  sieve = get_prime_sieve(n)
+  if not sieve:
+    sieve = get_prime_sieve(n)
   result = []
   for i in range(2, n):
-    if prime[i]:
+    if sieve[i]:
       result.append(i)
   return result
 
@@ -52,6 +54,7 @@ def get_prime_sieve(n):
   assert isinstance(n, int)
   # Sieve of Eratosthenes
   sieve = [True for i in range(0, n)]
+  sieve[0] = sieve[1] = False # 1 is not prime
   for i in range(2, n):
     if sieve[i]:
       mul = 2
