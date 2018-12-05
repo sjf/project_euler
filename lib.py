@@ -82,6 +82,15 @@ def is_prime(n):
     i += 6  
   return True
 
+def num_digits(n):
+  if n == 0:
+    return 1
+  c = 0
+  while n:
+    n = int(n/10)
+    c += 1
+  return c
+
 def multiply(l):
   assert isinstance(l, list)
   return reduce(lambda x, y: x*y, l)
@@ -92,3 +101,5 @@ def second(p):
 def push(l, item):
   l.insert(0, item)
   return l
+def print2d(l):
+  print(",\n".join(map(str, l)))
