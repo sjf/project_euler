@@ -177,6 +177,19 @@ def set_digit(n,pos,d):
 def get_digit(n,pos):
   return (n%10**(pos+1) - n%10**(pos)) // 10**pos 
 
+def reverse(n):
+  if n < 10:
+    return n
+  res = 0
+  while n:
+    res *= 10
+    res += n%10
+    n = n // 10
+  return res
+
+def is_palindrome(n):
+  return n == reverse(n)
+
 def is_pandigital(n):
   if n == 0:
     return False
