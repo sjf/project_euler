@@ -2,7 +2,10 @@
 
 from functools import reduce
 from collections import Counter
+from collections import defaultdict
 from math import sqrt
+
+#### Prime numbers ####
 
 def prime_factors(n):
   """ Returns the prime factors of n."""
@@ -83,45 +86,21 @@ def is_prime(n):
     i += 6  
   return True
 
-def num_digits(n):
-  if n == 0:
-    return 1
-  c = 0
-  while n:
-    n = n//10
-    c += 1
-  return c
+#### Permutations ####
 
-def is_pandigital(n):
-  if n == 0:
-    return False
-  # for each digit d of n, the binary digit in position d will be
-  # set to 1.
-  accum = 0
-  # target will have binary digit set to 1 in each position
-  # 1-number of digits in n
-  target = 0
-  while n:
-    d = n %10
-    n = n//10
-    accum |= 1 << d
-    target = (target << 1) | 1
-  target = target << 1 # right shift one for zero digit position
-
-  return accum == target
-
-def multiply(l):
-  assert isinstance(l, list)
-  return reduce(lambda x, y: x*y, l)
-def first(p):
-  return p[0]
-def second(p):
-  return p[1]
-def push(l, item):
-  l.insert(0, item)
-  return l
-def print2d(l):
-  print(",\n".join(map(str, l)))
+def permutations(l):
+  """ Generate the permutations of l using recursion. """
+  if not l:
+    return [[]]
+  result = []
+  for i in range(len(l)):
+    item = l.pop(i)
+    temp_result = permutations(l)
+    l.insert(i,item)
+    for res in temp_result:
+      res.append(item)
+    result.extend(temp_result)
+  return result
 
 def _max_movable(l,d):
   mx = None
@@ -163,29 +142,63 @@ def permutations_sjt(l):
     yield l[:]
     mx = _max_movable(l,d) 
 
-def permutations(l):
-  """ Generate the permutations of l using recursion. """
-  if not l:
-    return [[]]
+#### Digit operations ####
+
+def num_digits(n):
+  if n == 0:
+    return 1
+  c = 0
+  while n:
+    n = n//10
+    c += 1
+  return c
+
+def to_digits(d):
+  if d == 0: return [0]
   result = []
-  for i in range(len(l)):
-    item = l.pop(i)
-    temp_result = permutations(l)
-    l.insert(i,item)
-    for res in temp_result:
-      res.append(item)
-    result.extend(temp_result)
+  while d:
+    result.append(d % 10)
+    d = d//10
+  result.reverse()
   return result
 
-def read_words_from_file(f):
-  """ Reads a text file of words in the format '"word1","word2","word3"' """
-  txt = open(f).read()
-  return list(map(lambda s: s.strip('"'), txt.split(",")))
+def to_num(l):
+  n = 0
+  for i in l:
+    n *= 10
+    n += i
+  return n
 
-def sum_words(words):
-  """ Returns the ascii sum of the the letters in each word in words. 
-      Expects only capital letters. """
-  return list(map(lambda s: sum(map(lambda c: ord(c) - ord('A') + 1, s)), words))
+def set_digit(n,pos,d):
+  n -= (n%10**(pos+1) - n%10**(pos)) 
+  n += 10**pos * d
+  return n
+
+def get_digit(n,pos):
+  return (n%10**(pos+1) - n%10**(pos)) // 10**pos 
+
+def is_pandigital(n):
+  if n == 0:
+    return False
+  # for each digit d of n, the binary digit in position d will be
+  # set to 1.
+  accum = 0
+  # target will have binary digit set to 1 in each position
+  # 1-number of digits in n
+  target = 0
+  while n:
+    d = n %10
+    n = n//10
+    accum |= 1 << d
+    target = (target << 1) | 1
+  target = target << 1 # right shift one for zero digit position
+
+  return accum == target
+
+def isint(n):
+  return n == int(n)
+
+#### Geometric numbers ####
 
 def triangle(n):
   return n*(n + 1)//2
@@ -203,20 +216,31 @@ def is_hexagonal(x):
   n = (sqrt(8*x + 1) + 1) / 4
   return isint(n)
 
-def to_digits(d):
-  if d == 0: return [0]
-  result = []
-  while d:
-    result.append(d % 10)
-    d = d//10
-  result.reverse()
-  return result
+#### List operations ####
 
-def to_num(l):
-  n = 0
-  for i in l:
-    n *= 10
-    n += i
-  return n
-def isint(n):
-  return n == int(n)
+def multiply(l):
+  assert isinstance(l, list)
+  return reduce(lambda x, y: x*y, l)
+def first(p):
+  return p[0]
+def second(p):
+  return p[1]
+def push(l, item):
+  l.insert(0, item)
+  return l
+def print2d(l):
+  print(",\n".join(map(str, l)))
+
+#### File Operations ####
+
+def read_words_from_file(f):
+  """ Reads a text file of words in the format '"word1","word2","word3"' """
+  txt = open(f).read()
+  return list(map(lambda s: s.strip('"'), txt.split(",")))
+
+def sum_words(words):
+  """ Returns the ascii sum of the the letters in each word in words. 
+      Expects only capital letters. """
+  return list(map(lambda s: sum(map(lambda c: ord(c) - ord('A') + 1, s)), words))
+
+#### END ####

@@ -9,7 +9,6 @@ while n:
   r = 1
   while r <= n:
     res = n_choose_r(n,r)
-    print (n,r,res)
     if res > 1_000_000:
       count += 1
     r += 1
