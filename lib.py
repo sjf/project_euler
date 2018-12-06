@@ -2,6 +2,7 @@
 
 from functools import reduce
 from collections import Counter
+from math import sqrt
 
 def prime_factors(n):
   """ Returns the prime factors of n."""
@@ -136,7 +137,7 @@ def _max_movable(l,d):
         mx = i
   return mx
 
-def permutations(l):
+def permutations_sjt(l):
   """ Returns a generator that yields the permutations of l using
       the Steinhaus–Johnson–Trotter algorithm. """
   l.sort()
@@ -162,6 +163,20 @@ def permutations(l):
     yield l[:]
     mx = _max_movable(l,d) 
 
+def permutations(l):
+  """ Generate the permutations of l using recursion. """
+  if not l:
+    return [[]]
+  result = []
+  for i in range(len(l)):
+    item = l.pop(i)
+    temp_result = permutations(l)
+    l.insert(i,item)
+    for res in temp_result:
+      res.append(item)
+    result.extend(temp_result)
+  return result
+
 def read_words_from_file(f):
   """ Reads a text file of words in the format '"word1","word2","word3"' """
   txt = open(f).read()
@@ -171,3 +186,34 @@ def sum_words(words):
   """ Returns the ascii sum of the the letters in each word in words. 
       Expects only capital letters. """
   return list(map(lambda s: sum(map(lambda c: ord(c) - ord('A') + 1, s)), words))
+
+def triangle(n):
+  return int(n*(n + 1)/2)
+def pentagonal(n):
+  return int(n*(3*n-1)/2)
+def hexagonal(n):
+  return n*(2*n - 1)
+def is_triangular(x):
+  n = (sqrt(8*x + 1) - 1) / 2
+  return n == int(n)
+def is_pentagonal(x):
+  n = (sqrt(24*x + 1) + 1) / 6
+  return n == int(n)
+def is_hexagonal(x):
+  n = (sqrt(8*x + 1) + 1) / 4
+  return n == int(n)
+
+def to_digits(d):
+  if d == 0: return [0]
+  result = []
+  while d:
+    result.append(d % 10)
+    d = int(d/10)
+  result.reverse()
+  return result
+def to_num(l):
+  n = 0
+  for i in l:
+    n *= 10
+    n += i
+  return n
