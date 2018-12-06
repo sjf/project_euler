@@ -121,3 +121,53 @@ def push(l, item):
   return l
 def print2d(l):
   print(",\n".join(map(str, l)))
+
+def _max_movable(l,d):
+  mx = None
+  for i in range(len(l)-1):
+    n = l[i]
+    if d[i] == 1 and n > l[i+1]: #right
+      if mx is None or n > l[mx]:
+        mx = i
+  for i in range(1,len(l)):
+    n = l[i]
+    if d[i] == -1 and n > l[i-1]: #left
+      if mx is None or n > l[mx]:
+        mx = i
+  return mx
+
+def permutations(l):
+  """ Returns a generator that yields the permutations of l using
+      the Steinhaus–Johnson–Trotter algorithm. """
+  l.sort()
+  yield l[:]
+  # direction of each element
+  d = [-1 for i in range(len(l))] # -1 = left
+  # get index of largest moveable item (item is > than item it is facing)
+  mx = _max_movable(l,d)  
+  while mx is not None:
+    n = l[mx]
+    # Swap the largest item with the item it's facing
+    if d[mx] == 1: # right
+      l[mx],l[mx+1] = l[mx+1],l[mx]
+      d[mx],d[mx+1] = d[mx+1],d[mx]
+    else: # left
+      l[mx-1],l[mx] = l[mx],l[mx-1]
+      d[mx-1],d[mx] = d[mx],d[mx-1]
+    # reverse the direction of all larger items
+    for i in range(len(l)):
+      if l[i] > n:
+        d[i] *= -1
+
+    yield l[:]
+    mx = _max_movable(l,d) 
+
+def read_words_from_file(f):
+  """ Reads a text file of words in the format '"word1","word2","word3"' """
+  txt = open(f).read()
+  return list(map(lambda s: s.strip('"'), txt.split(",")))
+
+def sum_words(words):
+  """ Returns the ascii sum of the the letters in each word in words. 
+      Expects only capital letters. """
+  return list(map(lambda s: sum(map(lambda c: ord(c) - ord('A') + 1, s)), words))
