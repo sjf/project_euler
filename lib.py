@@ -40,7 +40,7 @@ def _get_factors(pairs, partial=1):
 def primes(n, sieve = None):
   """ Returns the prime numbers up to n."""
   assert isinstance(n, int)
-  assert len(sieve) == n
+  assert sieve is None or len(sieve) == n 
 
   if not sieve:
     sieve = get_prime_sieve(n)
@@ -90,6 +90,24 @@ def num_digits(n):
     n = int(n/10)
     c += 1
   return c
+
+def is_pandigital(n):
+  if n == 0:
+    return False
+  # for each digit d of n, the binary digit in position d will be
+  # set to 1.
+  accum = 0
+  # target will have binary digit set to 1 in each position
+  # 1-number of digits in n
+  target = 0
+  while n:
+    d = n %10
+    n = int(n/10)
+    accum |= 1 << d
+    target = (target << 1) | 1
+  target = target << 1 # right shift one for zero digit position
+
+  return accum == target
 
 def multiply(l):
   assert isinstance(l, list)
