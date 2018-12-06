@@ -18,5 +18,3 @@ for i in range(N):
   if ok and len(pfactors) == D*D:
     print(i)
     break
-
-

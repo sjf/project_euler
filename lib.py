@@ -88,7 +88,7 @@ def num_digits(n):
     return 1
   c = 0
   while n:
-    n = int(n/10)
+    n = n//10
     c += 1
   return c
 
@@ -103,7 +103,7 @@ def is_pandigital(n):
   target = 0
   while n:
     d = n %10
-    n = int(n/10)
+    n = n//10
     accum |= 1 << d
     target = (target << 1) | 1
   target = target << 1 # right shift one for zero digit position
@@ -188,32 +188,35 @@ def sum_words(words):
   return list(map(lambda s: sum(map(lambda c: ord(c) - ord('A') + 1, s)), words))
 
 def triangle(n):
-  return int(n*(n + 1)/2)
+  return n*(n + 1)//2
 def pentagonal(n):
-  return int(n*(3*n-1)/2)
+  return n*(3*n-1)//2
 def hexagonal(n):
   return n*(2*n - 1)
 def is_triangular(x):
   n = (sqrt(8*x + 1) - 1) / 2
-  return n == int(n)
+  return isint(n)
 def is_pentagonal(x):
   n = (sqrt(24*x + 1) + 1) / 6
-  return n == int(n)
+  return isint(n)
 def is_hexagonal(x):
   n = (sqrt(8*x + 1) + 1) / 4
-  return n == int(n)
+  return isint(n)
 
 def to_digits(d):
   if d == 0: return [0]
   result = []
   while d:
     result.append(d % 10)
-    d = int(d/10)
+    d = d//10
   result.reverse()
   return result
+
 def to_num(l):
   n = 0
   for i in l:
     n *= 10
     n += i
   return n
+def isint(n):
+  return n == int(n)
