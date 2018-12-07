@@ -70,7 +70,8 @@ def get_prime_sieve(n):
 def is_prime(n):
   assert isinstance(n, int)
   if n < 0: n = -n
-
+  if n <= 1:
+    return False
   # look for prime divisors of n
   # all primes > 3 are of the form 6k±1
   if n <= 3:
