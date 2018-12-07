@@ -68,23 +68,21 @@ def get_prime_sieve(n):
   return sieve
 
 def is_prime(n):
-  assert isinstance(n, int)
-  if n < 0: n = -n
   if n <= 1:
     return False
-  # look for prime divisors of n
-  # all primes > 3 are of the form 6k±1
   if n <= 3:
-   return True
+    return True
   if n % 2 == 0 or n % 3 == 0:
-   return False
-  i = 6
-  while i < n-1:
-    if n % (i + 1) == 0:
+    return False
+
+  mx = n**0.5
+  f=5
+  inc = 2
+  while f <= mx:
+    if n % f == 0:
       return False
-    if n % (i - 1) == 0:
-      return False
-    i += 6  
+    f += inc
+    inc = 6-inc #alternate 2,4
   return True
 
 #### Permutations ####
