@@ -103,6 +103,18 @@ def permutations(l):
     result.extend(temp_result)
   return result
 
+def combinations(l,ln, partial=[]):
+  """ Generate all permutations of length l using elements from l. """
+
+  if len(partial) == ln:
+    return [partial]
+  results = []
+  for x in l:
+    np = partial[:]
+    np.append(x)
+    results.extend(combinations(l,ln,np))
+  return results
+
 def _max_movable(l,d):
   mx = None
   for i in range(len(l)-1):
@@ -230,6 +242,39 @@ def is_hexagonal(x):
   n = (sqrt(8*x + 1) + 1) / 4
   return isint(n)
 
+#### Graph operations ####
+
+def topological_sort(nodes,edges):
+  """ Topological sort of a DAG using Kahns algorithm.
+      Nodes is a list of nodes in the graph. Edges is a dictionatory
+      of the form d[node] = set(destination nodes). """
+  iedges = defaultdict(set) # internal copy of the edges
+  backedges = defaultdict(set)
+  for a,dsts in edges.items():
+    iedges[a] = set(dsts)
+    for b in dsts:
+      backedges[b].add(a)
+
+  start = []
+  for n in nodes:
+    if len(backedges[n]) == 0:
+      start.append(n)
+
+  result = []
+  while start:
+    a = start.pop()
+    result.append(a)
+    nxts = set(iedges[a])
+    for b in nxts:
+      iedges[a].remove(b)
+      backedges[b].remove(a)
+      if len(backedges[b]) == 0:
+        start.append(b)
+  for es in iedges.values():
+    if len(es) != 0:
+      raise Exception('graph has a loop')
+  return result
+
 #### List operations ####
 
 def multiply(l):
@@ -244,6 +289,8 @@ def push(l, item):
   return l
 def print2d(l):
   print(",\n".join(map(str, l)))
+def nub2d(l):
+  return list(set(map(tuple,l)))
 
 #### File Operations ####
 
