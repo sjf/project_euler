@@ -133,7 +133,7 @@ def is_prime_mr(n, _precision_for_huge_n=16):
     return True
   if any((n % p) == 0 for p in _known_primes):
     return False
-    
+
   d, s = n - 1, 0
   while not d % 2:
     d, s = d >> 1, s + 1
@@ -388,6 +388,11 @@ def read_words_from_file(f):
   """ Reads a text file of words in the format '"word1","word2","word3"' """
   txt = open(f).read()
   return list(map(lambda s: s.strip('"'), txt.split(",")))
+
+def read_nums_from_file(f):
+  """ Reads a text file of numbers in the format n1,n2,n3\nn4,n5,n6' """
+  txt = open(f).read().strip()
+  return list(map(lambda x: list(map(int,x.split(','))), txt.split('\n')))
 
 def sum_words(words):
   """ Returns the ascii sum of the the letters in each word in words. 
