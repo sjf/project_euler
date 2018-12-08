@@ -3,6 +3,7 @@
 from functools import reduce
 from collections import Counter
 from collections import defaultdict
+from collections import MutableMapping
 from math import sqrt
 
 #### Prime numbers ####
@@ -22,39 +23,39 @@ def prime_factors(n):
   result.append(int(n))
   return result
 
-def get_factors(n):
+def factors(n):
   """ Returns the factors of n."""
   assert isinstance(n, int)
   if n == 1: return [1]
   # Get the prime factors of n, in the form p1^a, p2^b, p3^c
   prime_facs = Counter(prime_factors(n))
   # The factors of n are formed from every combination of the prime exponents
-  return _get_factors(list(prime_facs.items()))
+  return _factors(list(prime_facs.items()))
 
-def _get_factors(pairs, partial=1):
+def _factors(pairs, partial=1):
   """ Return all factors from pairs of the prime factors and their exponents."""
   if not pairs:
     return [partial]
   result = []
   (num, exp) = pairs[0]
   for i in range(exp+1):
-    result.extend(_get_factors(pairs[1:], partial * num**i))
+    result.extend(_factors(pairs[1:], partial * num**i))
   return result
 
 def primes(n, sieve = None):
   """ Returns the prime numbers up to n."""
   assert isinstance(n, int)
-  assert sieve is None or len(sieve) == n 
+  assert sieve is None or len(sieve) >= n 
 
   if not sieve:
-    sieve = get_prime_sieve(n)
+    sieve = prime_sieve(n)
   result = []
   for i in range(2, n):
     if sieve[i]:
       result.append(i)
   return result
 
-def get_prime_sieve(n):
+def prime_sieve(n):
   assert isinstance(n, int)
   # Sieve of Eratosthenes
   sieve = [True for i in range(0, n)]
@@ -67,7 +68,88 @@ def get_prime_sieve(n):
         mul += 1
   return sieve
 
-def is_prime(n):
+class Sieve(MutableMapping):
+  def __init__(self, limit):
+    self.store = dict()
+    self.limit = limit
+
+  def __getitem__(self, key):
+    if key in self.store: #return stored value
+      return self.store[key] 
+    if key < self.limit: #return default value
+      return True 
+    # calculate value
+    value = is_prime(key) 
+    self.store[key] = value
+    return value
+
+  def __setitem__(self, key, value):
+    self.store[key] = value
+
+  def __delitem__(self, key):
+    del self.store[key]
+
+  def __iter__(self):
+    return iter(self.store)
+
+  def __len__(self):
+    return self.limit
+
+def sparse_prime_sieve(n):
+  """ Returns a dictionary-like object that contains True for prime keys.
+      Values for numbers up to n are stored in the dictionary. Accessing
+      keys greater than n will calculate the result."""
+  assert isinstance(n, int)
+  sieve = Sieve(n)
+  sieve[0] = sieve[1] = False # 1 is not prime
+  # Sieve of Eratosthenes
+  for i in range(2, n):
+    if sieve[i]:
+      mul = 2
+      while mul*i < n:
+        sieve[mul*i] = False
+        mul += 1
+  return sieve
+
+def _try_composite(a, d, n, s):
+    if pow(a, d, n) == 1:
+        return False
+    for i in range(s):
+        if pow(a, 2**i * d, n) == n-1:
+            return False
+    return True # n  is definitely composite
+ 
+def is_prime(n, _precision_for_huge_n=16):
+  if n in _known_primes or n in (0, 1):
+      return True
+  if any((n % p) == 0 for p in _known_primes):
+      return False
+  d, s = n - 1, 0
+  while not d % 2:
+      d, s = d >> 1, s + 1
+  # Returns exact according to http://primes.utm.edu/prove/prove2_3.html
+  if n < 1373653: 
+      return not any(_try_composite(a, d, n, s) for a in (2, 3))
+  if n < 25326001: 
+      return not any(_try_composite(a, d, n, s) for a in (2, 3, 5))
+  if n < 118670087467: 
+      if n == 3215031751: 
+          return False
+      return not any(_try_composite(a, d, n, s) for a in (2, 3, 5, 7))
+  if n < 2152302898747: 
+      return not any(_try_composite(a, d, n, s) for a in (2, 3, 5, 7, 11))
+  if n < 3474749660383: 
+      return not any(_try_composite(a, d, n, s) for a in (2, 3, 5, 7, 11, 13))
+  if n < 341550071728321: 
+      return not any(_try_composite(a, d, n, s) for a in (2, 3, 5, 7, 11, 13, 17))
+  # otherwise
+  return not any(_try_composite(a, d, n, s) 
+                 for a in _known_primes[:_precision_for_huge_n])
+ 
+_known_primes = [2, 3]
+_known_primes += [x for x in range(5, 1000, 2) if is_prime(x)]
+
+def is_prime_trial_division(n):
   if n <= 1:
     return False
   if n <= 3:
@@ -197,6 +279,9 @@ def reverse(n):
     res += n%10
     n = n // 10
   return res
+
+def concat(a,b):
+  return a*10**num_digits(b) + b
 
 def is_palindrome(n):
   return n == reverse(n)
