@@ -244,7 +244,7 @@ def permutations_sjt(l):
 
 def partition(n):
   """ Returns the number of ways to partition n. """
-  
+
   # dynamic programming table
   # p(n) = p(n - gpenta(1)) + p(n - gpenta(2)) - p(n - gepenta(3)) - p(n - gpenta(4)) ...
   dp = [0]*(n+1)
@@ -340,8 +340,13 @@ def isint(n):
 
 def triangle(n):
   return n*(n + 1)//2
+
+def square(n):
+  return n**2
+
 def pentagonal(n):
   return n*(3*n-1)//2
+
 def gpentagonal(n): # Generalised pentagonal number
   # n = 2m
   if n % 2 == 0:
@@ -353,12 +358,21 @@ def gpentagonal(n): # Generalised pentagonal number
 
 def hexagonal(n):
   return n*(2*n - 1)
+
+def heptagonal(n):
+  return n*(5*n - 3)//2
+
+def octagonal(n):
+  return n*(3*n - 2)
+
 def is_triangular(x):
   n = (sqrt(8*x + 1) - 1) / 2
   return isint(n)
+
 def is_pentagonal(x):
   n = (sqrt(24*x + 1) + 1) / 6
   return isint(n)
+
 def is_hexagonal(x):
   n = (sqrt(8*x + 1) + 1) / 4
   return isint(n)
