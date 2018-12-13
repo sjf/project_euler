@@ -336,6 +336,9 @@ def is_pandigital(n):
 def isint(n):
   return n == int(n)
 
+def cuberoot(n):
+  return n ** (1.0 / 3)
+
 #### Geometric numbers ####
 
 def triangle(n):
