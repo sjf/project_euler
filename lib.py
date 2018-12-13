@@ -242,6 +242,28 @@ def permutations_sjt(l):
     yield l[:]
     mx = _max_movable(l,d) 
 
+def partition(n):
+  """ Returns the number of ways to partition n. """
+  
+  # dynamic programming table
+  # p(n) = p(n - gpenta(1)) + p(n - gpenta(2)) - p(n - gepenta(3)) - p(n - gpenta(4)) ...
+  dp = [0]*(n+1)
+  dp[0] = 1
+  for i in range(1,n+1):
+    penta = 1
+    value = 0
+    k = 0
+    while i-lib.gpentagonal(penta) >= 0:
+      sign = 1 if k < 2 else -1
+      value += sign * dp[i-lib.gpentagonal(penta)]
+      penta += 1
+      k = (k + 1) % 4
+    dp[i] = value % N
+    if dp[i] % N == 0:      
+      print(' solution',i,dp[i])
+      return dp[i]
+  return dp[n]
+
 #### Digit operations ####
 
 def num_digits(n):
@@ -320,6 +342,15 @@ def triangle(n):
   return n*(n + 1)//2
 def pentagonal(n):
   return n*(3*n-1)//2
+def gpentagonal(n): # Generalised pentagonal number
+  # n = 2m
+  if n % 2 == 0:
+    m = n//2
+    return m*(3*m + 1)//2
+  # n = 2m-1
+  m = (n + 1) // 2
+  return m*(3*m - 1)//2
+
 def hexagonal(n):
   return n*(2*n - 1)
 def is_triangular(x):
@@ -377,8 +408,17 @@ def second(p):
 def push(l, item):
   l.insert(0, item)
   return l
-def print2d(l):
-  print(",\n".join(map(str, l)))
+def print2d(l,rows=None,cols=None):
+  if not rows and not cols:
+    print(",\n".join(map(str, l)))
+    return
+
+  if cols:
+    print("  ", "  ".join(map(str, cols)))
+  if rows:
+    for i in range(len(rows)):
+      print(rows[i],l[i])
+
 def nub2d(l):
   return list(set(map(tuple,l)))
 
