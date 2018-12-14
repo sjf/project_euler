@@ -372,6 +372,12 @@ def is_triangular(x):
   n = (sqrt(8*x + 1) - 1) / 2
   return isint(n)
 
+def is_square(x):
+  return isint(x**0.5)
+
+def is_cube(x):
+  return isint(x**(1.0/3))
+
 def is_pentagonal(x):
   n = (sqrt(24*x + 1) + 1) / 6
   return isint(n)
