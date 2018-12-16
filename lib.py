@@ -190,8 +190,48 @@ def permutations(l):
     result.extend(temp_result)
   return result
 
+def permutations_lexico(l):
+  """ Generate the permutations of l using swapping, in lexicographic order using the 
+      Narayana Pandita algorithm.. The results will be unique even if there are
+      duplicate elements in l.   """
+  if not l:
+    return # no results
+
+  l = l[:]
+  l.sort()
+  yield l
+
+  ln = len(l)
+  more_results = True
+  while more_results:
+    # Find largest i, such that l[i] < l[i+1]
+    i = ln-2
+    while i >= 0:
+      if l[i] < l[i+1]:
+        break
+      else:
+        i -= 1
+
+    if i >= 0:
+      # Find the largest index such that l[i] < l[j]
+      j = ln-1
+      while j > i:
+        if l[i] < l[j]:
+          break
+        else:
+          j -= 1
+      # Swap l[i],l[j]
+      l[i],l[j] = l[j],l[i]
+      # Reverse list from l[i+1]
+      reversel(l, i+1)
+
+      yield l[:]
+    else: # No value for i
+      more_results = False
+
+
 def combinations(l,ln, partial=[]):
-  """ Generate all permutations of length l using elements from l. """
+  """ Generate all permutations of length ln using elements from l. """
 
   if len(partial) == ln:
     return [partial]
@@ -287,6 +327,7 @@ def to_digits(d):
 def to_num(l):
   n = 0
   for i in l:
+    assert i < 10
     n *= 10
     n += i
   return n
@@ -424,13 +465,18 @@ def topological_sort(nodes,edges):
 def multiply(l):
   assert isinstance(l, list)
   return reduce(lambda x, y: x*y, l)
+
 def first(p):
   return p[0]
+
 def second(p):
   return p[1]
+
 def push(l, item):
+  """ Inverse of pop. """
   l.insert(0, item)
   return l
+
 def print2d(l,rows=None,cols=None):
   if not rows and not cols:
     print(",\n".join(map(str, l)))
@@ -443,7 +489,20 @@ def print2d(l,rows=None,cols=None):
       print(rows[i],l[i])
 
 def nub2d(l):
+  """ Remove duplicates from a list of lists. """
   return list(set(map(tuple,l)))
+
+def reversel(l,a=0,b=None):
+  """ Reverse a list in place from index a up to b, which default to the start and the end. """
+  if b is None: 
+    b = len(l)
+  assert a <= b <= len(l)
+
+  num_swaps = (b-a)//2
+  for i in range(num_swaps):
+    j = b-i-1
+    l[a+i],l[j] = l[j],l[a+i]
+  return l
 
 #### File Operations ####
 
