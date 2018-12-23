@@ -10,10 +10,11 @@ def get_sqrt_fraction(n):
 
   result = []
   result.append(a)
-  if a**2 == n:
+  if a**2 == n: 
+    # n does not have an irrational sq root
     return result
-    
-  while a != 2*a0:
+
+  while a != 2*a0: # period ends when a == 2*a0
     m = d*a - m
     d = (n - m**2)/d
     a = int((a0 + m)/d)
