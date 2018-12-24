@@ -380,6 +380,9 @@ def isint(n):
 def cuberoot(n):
   return n ** (1.0 / 3)
 
+def fraction_tostr(n,d):
+  return str(n) + '/' + str(d)
+
 #### Geometric numbers ####
 
 def triangle(n):
