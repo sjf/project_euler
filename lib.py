@@ -174,6 +174,62 @@ def is_prime_trial_division(n):
     inc = 6-inc #alternate 2,4
   return True
 
+#### Continued Fractions ####
+
+def sqrt_continued_fraction(n):
+  """ Returns the continued fraction representation of the square root of n. Irrational 
+      square roots have a periodic continued fraction, this returns up the first repetition 
+      of the fraction. The result is a list of the terms of the fraction, the numerator is 
+      always one."""
+  if is_square(n):
+    return [int(sqrt(n))]
+
+  result = []
+  terms = gen_sqrt_continued_fraction(n)
+  a = a0 = next(terms)
+  result.append(a0)
+  while a != 2*a0: # period ends when a == 2*a0
+    a = next(terms)
+    result.append(a)
+  return result
+
+def gen_sqrt_continued_fraction(n):
+  """ Generator for the continued fraction representation of the square root of n. """ 
+  # https://en.wikipedia.org/wiki/Methods_of_computing_square_roots#Algorithm
+  m = 0
+  d = 1
+  a = a0 = int(sqrt(n))
+  yield a
+
+  if a**2 == n: 
+    # n does not have an irrational sq root
+    while True:
+      yield 0
+
+  while True:
+    m = d*a - m
+    d = (n - m**2)/d
+    a = int((a0 + m)/d)
+    yield a
+
+def eval_continued_fraction(terms):
+  """ Return the convergent p/q for the terms of the continued fraction.
+      Returns a tuple of p and q."""
+  # p_i = a_i*p_i-1 + p_i-2
+  # q_i = a_i*q_i-1 + q_i-2
+  p_1 = 0
+  q_1 = 1
+  p = 1
+  q = 0
+
+  for a in terms:
+    temp = (p,q)
+    p = a*p + p_1
+    q = a*q + q_1
+    p_1,q_1 = temp
+
+  return p,q
+
 #### Permutations ####
 
 def permutations(l):

@@ -18,25 +18,12 @@ def get_e_continued_fraction(n):
       result.append(1)
   return result
 
-def eval_continued_fraction(terms):
-  if not terms:
-    return 0,1
-  if len(terms) == 1:
-    return terms[0],1
 
-  d = terms.pop()
-  n = 1
-  while len(terms) > 1:
-    n = terms.pop()*d + n
-    n,d = d,n
-  # First entry in terms is a whole number
-  n += d*terms.pop()
-  return n,d
 
 count = 0
 for i in range(1,N+1):
-  n,d = eval_continued_fraction(get_e_continued_fraction(i))
+  n,d = lib.eval_continued_fraction(get_e_continued_fraction(i))
   print(i, lib.fraction_tostr(n,d))
 
-n,d = eval_continued_fraction(get_e_continued_fraction(100))
+n,d = lib.eval_continued_fraction(get_e_continued_fraction(100))
 print(sum(lib.to_digits(n)))
