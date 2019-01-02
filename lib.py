@@ -201,11 +201,8 @@ def is_prime_trial_division(n):
 def phi(n):
   """ Returns the Euler totient of n, the count of numbers less than n which are relatively prime to n. """
   if not n:
-    return None
-  # if sieve[n]:
-  #   return n-1 # all numbers less than n are coprime
+    return None # not defined for 0
 
-  #fn = _factors[n]
   fn = set(prime_factors(n))
   result = n
   # https://en.wikipedia.org/wiki/Euler%27s_totient_function#Euler's_product_formula
@@ -339,9 +336,9 @@ def permutations(l):
   return result
 
 def permutations_lexico(l):
-  """ Generate the permutations of l using swapping, in lexicographic order using the 
+  """ Generator for the permutations of l using swapping, in lexicographic order using the 
       Narayana Pandita algorithm.. The results will be unique even if there are
-      duplicate elements in l.   """
+      duplicate elements in l."""
   if not l:
     return # no results
 
@@ -377,7 +374,6 @@ def permutations_lexico(l):
     else: # No value for i
       more_results = False
 
-
 def combinations(l,ln, partial=[]):
   """ Generate all permutations of length ln using elements from l. """
 
@@ -388,6 +384,20 @@ def combinations(l,ln, partial=[]):
     np = partial[:]
     np.append(x)
     results.extend(combinations(l,ln,np))
+  return results
+
+def subsets(l,ln, partial=[]):
+  """ Generates the subsets of l that have ln elements. """
+  if len(partial) == ln:
+    return [partial]
+  results = []
+  for x in l:
+    if not partial or x >= partial[-1]:
+      nextp = partial[:]
+      nextp.append(x)
+      nextl = l[:]
+      nextl.remove(x)
+      results.extend(subsets(nextl,ln,nextp))
   return results
 
 def _max_movable(l,d):
@@ -430,12 +440,13 @@ def permutations_sjt(l):
     yield l[:]
     mx = _max_movable(l,d) 
 
-def partition(n):
+def partition_count(n):
   """ Returns the number of ways to partition n. """
 
-  # dynamic programming table
+  # The number of partitions of n can be computing using pentagonal numbers.
+  # https://en.wikipedia.org/wiki/Pentagonal_number_theorem#Relation_with_partitions
   # p(n) = p(n - gpenta(1)) + p(n - gpenta(2)) - p(n - gepenta(3)) - p(n - gpenta(4)) ...
-  dp = [0]*(n+1)
+  dp = [0]*(n+1)  # dynamic programming table 
   dp[0] = 1
   for i in range(1,n+1):
     penta = 1
@@ -522,7 +533,7 @@ def is_pandigital(n):
 
   return accum == target
 
-def isint(n):
+def is_int(n):
   return n == int(n)
 
 def cuberoot(n):
