@@ -8,8 +8,8 @@ from math import sqrt
 
 #### Prime numbers ####
 
-def prime_factors(n):
-  """ Returns the prime factors of n."""
+def _prime_factors(n):
+  """ Returns the prime factors of n. Unmemoized version. """
   assert isinstance(n, int)
 
   result = []
@@ -21,6 +21,30 @@ def prime_factors(n):
     else:
       p += 1
   result.append(int(n))
+  return result
+
+_factors_memo = {}
+def prime_factors(n):
+  """ Returns the prime factors of n. Results are memoized to improve performance for future invocations. """
+  if n in _factors_memo:
+    return _factors_memo[n]
+
+  num = n
+  result = []
+  p=2
+  while p**2 <= n:
+    if n % p == 0:
+      result.append(p)
+      n //= p
+    else:
+      p += 1
+    if n in _factors_memo:
+      result.extend(_factors_memo[n])
+      _factors_memo[num] = result
+      return result
+      
+  result.append(int(n))
+  _factors_memo[num] = result
   return result
 
 def factors(n):
@@ -174,7 +198,51 @@ def is_prime_trial_division(n):
     inc = 6-inc #alternate 2,4
   return True
 
-#### Continued Fractions ####
+def phi(n):
+  """ Returns the Euler totient of n, the count of numbers less than n which are relatively prime to n. """
+  if not n:
+    return None
+  # if sieve[n]:
+  #   return n-1 # all numbers less than n are coprime
+
+  #fn = _factors[n]
+  fn = set(prime_factors(n))
+  result = n
+  # https://en.wikipedia.org/wiki/Euler%27s_totient_function#Euler's_product_formula
+  for f in fn:
+    result *= (1 - 1/f)
+  return int(result)
+
+#### Fractions ####
+
+def add_fractions(n1,d1,n2,d2):
+  """Add the two fractions n1/d1 and n2/d2. If the arguments are reduced, the output will be reduced. """
+  d = lcm(d1,d2)
+  n = int(n1 * (d/d1) + n2 * (d/d2))
+  return n,d
+
+def sub_fractions(n1,d1,n2,d2):
+  """Subtract the two fractions n1/d1 and n2/d2. If the arguments are reduced, the output will be reduced. """
+  n,d = add_fractions(n1,d1,-n2,d2)
+  if n == 0:
+    d = 1
+  return n,d
+
+def gcd(a,b):
+  aa = Counter(prime_factors(a))
+  bb = Counter(prime_factors(b))
+  common = aa & bb
+  result = 1
+  for num,cnt in common.items():
+    result *= num**cnt
+  return result
+
+def lcm(a,b):
+  return int(a*b / gcd(a,b))
+
+def reduce_fraction(n,d):
+  g = gcd(n,d)
+  return int(n/g), int(d/g)
 
 def sqrt_continued_fraction(n):
   """ Returns the continued fraction representation of the square root of n. Irrational 
@@ -229,6 +297,30 @@ def eval_continued_fraction(terms):
     p_1,q_1 = temp
 
   return p,q
+
+def solve_pells_equation(n):
+  """ Return the fundamental solution for the Pell's equation x^2 - n*y^2 = 1 
+      using the continued fraction convergent method. The fundamental solution is the solution with the 
+      lowest value for x.
+      https://en.wikipedia.org/wiki/Pell%27s_equation#Fundamental_solution_via_continued_fractions """
+  # p_i = a_i*p_i-1 + p_i-2
+  # q_i = a_i*q_i-1 + q_i-2
+  p_1 = 0
+  q_1 = 1
+  p = 1
+  q = 0
+
+  for a in gen_sqrt_continued_fraction(n):
+    temp = (p,q)
+    p = a*p + p_1
+    q = a*q + q_1
+    p_1,q_1 = temp
+
+    if p**2 - n*(q**2) == 1:
+      return p,q
+
+def fraction_tostr(n,d):
+  return str(n) + '/' + str(d)
 
 #### Permutations ####
 
@@ -435,9 +527,6 @@ def isint(n):
 
 def cuberoot(n):
   return n ** (1.0 / 3)
-
-def fraction_tostr(n,d):
-  return str(n) + '/' + str(d)
 
 #### Geometric numbers ####
 
