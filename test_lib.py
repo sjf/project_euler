@@ -1,6 +1,59 @@
 import pytest
 from lib import *
 
+#### Digit operations ####
+
+def test_num_digits():
+  assert num_digits(0) == 1
+  assert num_digits(3) == 1
+  assert num_digits(1234) == 4
+
+def test_to_digits():
+  assert to_digits(0) == [0]
+  assert to_digits(3) == [3]
+  assert to_digits(1234) == [1,2,3,4]
+
+def test_to_num():
+  assert to_num([0]) == 0
+  assert to_num([3]) == 3
+  assert to_num([0,1,2,3,4]) == 1234
+
+def test_set_digit():
+  assert set_digit(1234,0,0) == 1230
+  assert set_digit(1234,1,5) == 1254
+  assert set_digit(1,0,5) == 5
+
+def test_get_digit():
+  assert get_digit(1234, 1) == 3
+
+def test_reverse():
+  assert reverse(1) == 1
+  assert reverse(12340) == 4321
+
+def test_concat():
+  assert concat(123,456) == 123456
+
+def test_is_palindrome():
+  assert is_palindrome(1234) == False
+  assert is_palindrome(1) == True
+  assert is_palindrome(12321) == True
+  assert is_palindrome(1221) == True
+
+def test_is_pandigital():
+  assert is_pandigital(124) == False
+  assert is_pandigital(1234) == True
+  assert is_pandigital(987654321) == True
+  assert is_pandigital(112233445566778899) == False
+
+def test_is_int():
+  assert is_int(1) == True
+  assert is_int(1.0) == True
+  assert is_int(1.1) == False
+
+def test_cuberoot():
+  assert cuberoot(1) == 1
+  assert cuberoot(27) == 3
+
 #### Geometric numbers ####
 
 def test_triangle():
@@ -14,7 +67,6 @@ def test_square():
   assert square(1) == 1
   assert square(2) == 4
   assert square(10) == 100
-
 
 def test_pentagonal():
   assert pentagonal(0) == 0

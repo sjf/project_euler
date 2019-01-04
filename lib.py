@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
 
 from functools import reduce
+from collections.abc import MutableMapping
 from collections import Counter
 from collections import defaultdict
-from collections import MutableMapping
 from math import sqrt
 
 #### Prime numbers ####
