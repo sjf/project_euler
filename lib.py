@@ -570,21 +570,21 @@ def octagonal(n):
 
 def is_triangular(x):
   n = (sqrt(8*x + 1) - 1) / 2
-  return isint(n)
+  return is_int(n)
 
 def is_square(x):
-  return isint(x**0.5)
+  return is_int(x**0.5)
 
 def is_cube(x):
-  return isint(x**(1.0/3))
+  return is_int(x**(1.0/3))
 
 def is_pentagonal(x):
   n = (sqrt(24*x + 1) + 1) / 6
-  return isint(n)
+  return is_int(n)
 
 def is_hexagonal(x):
   n = (sqrt(8*x + 1) + 1) / 4
-  return isint(n)
+  return is_int(n)
 
 #### Graph operations ####
 
@@ -662,6 +662,14 @@ def reversel(l,a=0,b=None):
     j = b-i-1
     l[a+i],l[j] = l[j],l[a+i]
   return l
+
+def take(l,n):
+  """ Return the first n elements from iterable l."""
+  itr = iter(l)
+  results = []
+  for i in range(n):
+    results.append(next(itr))
+  return results
 
 #### File Operations ####
 
